@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DHH Evaluation Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F5F2ED;
+    --surface: #FFFFFF;
+    --surface2: #EFECE6;
+    --border: rgba(0,0,0,0.10);
+    --border-strong: rgba(0,0,0,0.18);
+    --text: #1A1814;
+    --text-muted: #6B6760;
+    --text-light: #9E9B96;
+    --accent: #2B5CE6;
+    --accent-bg: #EEF2FD;
+    --danger: #C0392B;
+    --danger-bg: #FDECEA;
+    --success: #1A7A4A;
+    --success-bg: #E8F5EE;
+    --warning: #8B5E00;
+    --warning-bg: #FDF3DC;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-lg: 20px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 16px; line-height: 1.6; }
+
+  .screen { display: none; min-height: 100vh; padding: 32px 20px; animation: fadeIn 0.4s ease; }
+  .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); width: 100%; max-width: 720px; padding: 48px; }
+  .card-sm { max-width: 520px; }
+  .card-wide { max-width: 860px; }
+
+  .display-sm { font-family: 'DM Serif Display', serif; font-size: 28px; line-height: 1.2; color: var(--text); margin-bottom: 8px; }
+  .subtitle { font-size: 15px; color: var(--text-muted); margin-bottom: 32px; }
+  .label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); margin-bottom: 6px; }
+  .body-text { font-size: 15px; line-height: 1.75; color: var(--text-muted); }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 28px; border-radius: var(--radius); border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; transition: all 0.18s ease; }
+  .btn-primary { background: var(--text); color: #FFF; }
+  .btn-primary:hover { background: #333; transform: translateY(-1px); box-shadow: var(--shadow); }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: #E5E2DB; }
+  .btn-lg { padding: 16px 36px; font-size: 16px; border-radius: var(--radius-lg); }
+  .btn-block { width: 100%; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+  .progress-wrap { margin-bottom: 32px; width: 100%; max-width: 860px; }
+  .progress-steps { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+  .step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border-strong); transition: all 0.3s; }
+  .step-dot.done { background: var(--success); }
+  .step-dot.active { background: var(--accent); transform: scale(1.4); }
+  .progress-label { font-size: 12px; color: var(--text-light); }
+
+  .consent-scroll { border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; max-height: 300px; overflow-y: auto; margin-bottom: 24px; background: var(--bg); font-size: 14px; line-height: 1.8; color: var(--text-muted); }
+  .consent-scroll h3 { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--text); margin: 16px 0 6px; }
+  .consent-scroll h3:first-child { margin-top: 0; }
+  .consent-scroll p { margin-bottom: 10px; }
+  .consent-scroll ul { padding-left: 20px; margin-bottom: 10px; }
+  .consent-scroll ul li { margin-bottom: 5px; }
+  .checkbox-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; cursor: pointer; }
+  .checkbox-row input[type=checkbox] { width: 18px; height: 18px; margin-top: 2px; cursor: pointer; accent-color: var(--accent); flex-shrink: 0; }
+  .checkbox-row span { font-size: 14px; color: var(--text); line-height: 1.6; }
+
+  .tutorial-step { display: flex; gap: 16px; align-items: flex-start; padding: 16px; border-radius: var(--radius); background: var(--bg); border: 1px solid var(--border); margin-bottom: 10px; }
+  .step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #FFF; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .tutorial-tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; margin-right: 6px; }
+  .tag-a { background: var(--accent-bg); color: var(--accent); }
+  .tag-b { background: var(--success-bg); color: var(--success); }
+
+  .condition-header { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-radius: var(--radius); margin-bottom: 16px; font-size: 14px; font-weight: 500; }
+  .cond-a { background: var(--accent-bg); color: var(--accent); border: 1px solid rgba(43,92,230,0.15); }
+  .cond-b { background: var(--success-bg); color: var(--success); border: 1px solid rgba(26,122,74,0.15); }
+  .cond-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+  .video-wrap { position: relative; border-radius: var(--radius); overflow: hidden; background: #111; margin-bottom: 16px; aspect-ratio: 16/9; border: 1px solid var(--border); }
+  .video-wrap video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .caption-bar { background: rgba(0,0,0,0.85); padding: 14px 20px; border-radius: var(--radius); margin-bottom: 16px; min-height: 56px; display: flex; align-items: center; justify-content: center; text-align: center; }
+  .caption-text { font-size: 17px; color: #FFF; line-height: 1.5; font-weight: 400; transition: color 0.4s; }
+  .caption-text.emotion-happy    { color: #5DD98B; }
+  .caption-text.emotion-angry    { color: #FF6B6B; }
+  .caption-text.emotion-sad      { color: #74B3FF; }
+  .caption-text.emotion-surprised{ color: #FFD166; }
+  .caption-text.emotion-neutral  { color: #FFFFFF; }
+  .caption-text.emotion-fearful  { color: #C77DFF; }
+
+  .waveform-wrap { margin-bottom: 16px; display: none; }
+  .waveform-wrap.visible { display: block; }
+  .waveform-label { font-size: 11px; color: var(--text-light); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+  canvas#waveform { width: 100%; height: 56px; border-radius: var(--radius-sm); background: #F0EDE8; border: 1px solid var(--border); display: block; }
+
+  .sentence-counter { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
+  .sentence-counter strong { color: var(--text); }
+
+  .reaction-timer { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .timer-label { font-size: 13px; color: var(--text-muted); }
+  .timer-value { font-size: 22px; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--text); }
+  .timer-value.running { color: var(--accent); }
+
+  .emotion-prompt { font-size: 15px; color: var(--text); margin-bottom: 14px; font-weight: 500; }
+  .emotion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .emotion-btn { padding: 14px 10px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--surface); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--text); text-align: center; transition: all 0.15s ease; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .emotion-btn:hover { border-color: var(--border-strong); background: var(--bg); transform: translateY(-1px); }
+  .emotion-icon { font-size: 22px; }
+  .emotion-btn.em-happy.selected    { border-color: #1A7A4A; background: var(--success-bg); color: #1A7A4A; }
+  .emotion-btn.em-angry.selected    { border-color: #C0392B; background: var(--danger-bg);  color: #C0392B; }
+  .emotion-btn.em-sad.selected      { border-color: #2B5CE6; background: var(--accent-bg);  color: #2B5CE6; }
+  .emotion-btn.em-surprised.selected{ border-color: #8B5E00; background: var(--warning-bg); color: #8B5E00; }
+  .emotion-btn.em-neutral.selected  { border-color: #555;    background: #F0EDE8;            color: #333; }
+  .emotion-btn.em-fearful.selected  { border-color: #6A3C9A; background: #F3EEF9;            color: #6A3C9A; }
+
+  .nasa-item { margin-bottom: 22px; }
+  .nasa-item:last-child { margin-bottom: 0; }
+  .nasa-name { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .nasa-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+  .nasa-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-light); margin-bottom: 4px; }
+  input[type=range] { width: 100%; height: 4px; border-radius: 2px; cursor: pointer; accent-color: var(--accent); }
+  .nasa-val { text-align: center; font-size: 14px; font-weight: 500; color: var(--accent); margin-top: 4px; }
+  .nasa-total-box { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; margin: 24px 0; }
+  .nasa-total-num { font-size: 36px; font-weight: 500; color: var(--text); font-family: 'DM Serif Display', serif; }
+  .nasa-total-label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+  .break-countdown { font-family: 'DM Serif Display', serif; font-size: 64px; color: var(--accent); text-align: center; margin: 16px 0; font-variant-numeric: tabular-nums; }
+
+  .debrief-q { margin-bottom: 20px; }
+  .debrief-q label { font-size: 14px; font-weight: 500; color: var(--text); display: block; margin-bottom: 6px; }
+  .debrief-q textarea { width: 100%; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); resize: vertical; min-height: 80px; }
+  .debrief-q textarea:focus { outline: none; border-color: var(--accent); }
+
+  .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+  .result-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
+  .result-card-label { font-size: 12px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .result-card-val { font-size: 28px; font-weight: 500; font-family: 'DM Serif Display', serif; color: var(--text); }
+  .result-card-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .result-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 24px; }
+  .result-table th { text-align: left; color: var(--text-muted); font-weight: 400; padding: 8px 10px; border-bottom: 1px solid var(--border); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .result-table td { padding: 10px; border-bottom: 1px solid var(--border); color: var(--text); }
+  .result-table tr:last-child td { border-bottom: none; }
+  .correct-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; background: var(--success-bg); color: var(--success); }
+  .wrong-badge   { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; background: var(--danger-bg);  color: var(--danger); }
+
+  .pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+  .pill-blue  { background: var(--accent-bg);  color: var(--accent); }
+  .pill-green { background: var(--success-bg); color: var(--success); }
+
+  .alert-info { background: var(--accent-bg); color: var(--accent); border: 1px solid rgba(43,92,230,0.2); padding: 14px 18px; border-radius: var(--radius-sm); font-size: 14px; margin-bottom: 20px; }
+  .demo-banner { background: var(--warning-bg); border: 1px solid rgba(139,94,0,0.2); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; color: var(--warning); margin-bottom: 14px; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+  .flex { display: flex; } .gap-12 { gap: 12px; } .justify-end { justify-content: flex-end; }
+  .text-center { text-align: center; }
+  .mt-8 { margin-top: 8px; } .mt-16 { margin-top: 16px; } .mb-8 { margin-bottom: 8px; } .mb-16 { margin-bottom: 16px; }
+
+  /* PID input */
+  .pid-input { width: 100%; padding: 16px; border: 1.5px solid var(--border-strong); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 20px; color: var(--text); background: var(--bg); text-align: center; margin-bottom: 20px; outline: none; transition: border-color 0.2s; }
+  .pid-input:focus { border-color: var(--accent); }
+
+  ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     NETLIFY FORM (hidden — receives data)
+══════════════════════════════════════ -->
+<form name="results" netlify netlify-honeypot="bot-field" hidden>
+  <input type="text" name="participant" />
+  <input type="text" name="condition_order" />
+  <input type="text" name="timestamp" />
+  <input type="text" name="data" />
+</form>
+
+<!-- ══════════════════════════════════════
+     SCREEN 0 — PARTICIPANT ID
+══════════════════════════════════════ -->
+<div class="screen active" id="screen-welcome">
+  <div class="card card-sm text-center">
+    <div class="label">DHH Evaluation Study</div>
+    <div class="display-sm">Welcome</div>
+    <div class="subtitle">Please enter your name or participant ID to begin.</div>
+    <input
+      class="pid-input"
+      type="text"
+      id="input-pid"
+      placeholder="Your name or ID…"
+      autocomplete="off"
+      oninput="document.getElementById('btn-enter').disabled = this.value.trim().length === 0"
+      onkeydown="if(event.key==='Enter') enterStudy()"
+    />
+    <button class="btn btn-primary btn-block btn-lg" id="btn-enter" disabled onclick="enterStudy()">
+      Continue →
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 1 — CONSENT
+══════════════════════════════════════ -->
+<div class="screen" id="screen-consent">
+  <div class="card card-sm">
+    <div class="label">Before we begin</div>
+    <div class="display-sm">Consent Form</div>
+    <div class="subtitle">Please read carefully and tick all boxes to proceed.</div>
+
+    <div class="consent-scroll">
+      <h3>Study Title</h3>
+      <p>Evaluating the impact of visual sound rhythms and emotion-coded captions in online meetings for Deaf and Hard-of-Hearing users.</p>
+      <h3>Purpose</h3>
+      <p>This study examines a digital accessibility tool designed to help Deaf and Hard-of-Hearing (DHH) users better understand the emotional tone of speech during online meetings. We compare standard text captions against a new interface that uses color-coded text and visual sound frequency graphs.</p>
+      <h3>What You Will Do</h3>
+      <ul>
+        <li>Watch short video clips of a person speaking one sentence at a time.</li>
+        <li>After each sentence, select the emotion you perceived.</li>
+        <li>Complete a short NASA Task Load Index (NASA-TLX) questionnaire after each block.</li>
+        <li>Answer a few brief debrief questions at the end.</li>
+      </ul>
+      <p>The entire session takes approximately 15–18 minutes.</p>
+      <h3>Risks &amp; Benefits</h3>
+      <p>Risks are minimal. You may experience mild visual fatigue from watching a screen. Your participation contributes to improving accessible communication tools for the DHH community.</p>
+      <h3>Confidentiality</h3>
+      <p>All data is pseudo-anonymised. No names are stored alongside identifiable information beyond what you enter as your participant ID. Data is held securely and deleted at the end of the project.</p>
+      <h3>Voluntary Participation</h3>
+      <p>Your participation is entirely voluntary. You may withdraw at any time without penalty by closing this browser window.</p>
+    </div>
+
+    <label class="checkbox-row">
+      <input type="checkbox" id="check1" onchange="checkConsent()">
+      <span>I have read and understood the information above, and I agree to participate.</span>
+    </label>
+    <label class="checkbox-row">
+      <input type="checkbox" id="check2" onchange="checkConsent()">
+      <span>I understand my participation is voluntary and I can withdraw at any time.</span>
+    </label>
+    <label class="checkbox-row">
+      <input type="checkbox" id="check3" onchange="checkConsent()">
+      <span>I consent to my anonymised data being used for research purposes.</span>
+    </label>
+
+    <div class="flex gap-12 mt-16">
+      <button class="btn btn-secondary" onclick="declineConsent()">Decline</button>
+      <button class="btn btn-primary" id="btn-consent" disabled onclick="goTo('screen-tutorial')">I Agree &amp; Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 2 — TUTORIAL
+══════════════════════════════════════ -->
+<div class="screen" id="screen-tutorial">
+  <div class="card">
+    <div class="label">Before we begin</div>
+    <div class="display-sm">How this study works</div>
+    <div class="subtitle">Please read through everything before starting.</div>
+
+    <div style="margin-bottom:24px;">
+      <div class="label mb-8">What you will do</div>
+      <div class="tutorial-step">
+        <div class="step-num">1</div>
+        <div><strong>Watch video clips</strong><br><span class="body-text">You will watch a series of short video clips — one sentence at a time. Each clip shows a person speaking a single sentence.</span></div>
+      </div>
+      <div class="tutorial-step">
+        <div class="step-num">2</div>
+        <div><strong>Identify the emotion</strong><br><span class="body-text">After each sentence finishes, select the emotion you perceived as quickly and honestly as possible. Your reaction time is measured from when the video ends until you make your selection.</span></div>
+      </div>
+      <div class="tutorial-step">
+        <div class="step-num">3</div>
+        <div><strong>Two rounds of 6 sentences</strong><br><span class="body-text">You will complete two blocks with a short break in between. Each block uses a different interface.</span></div>
+      </div>
+      <div class="tutorial-step">
+        <div class="step-num">4</div>
+        <div><strong>Short questionnaire after each block</strong><br><span class="body-text">After each block you will fill in a brief workload questionnaire (NASA-TLX). This takes about 2 minutes.</span></div>
+      </div>
+    </div>
+
+    <hr class="divider" style="margin:20px 0;">
+
+    <div style="margin-bottom:24px;">
+      <div class="label mb-8">The two interfaces</div>
+      <div class="tutorial-step">
+        <span class="tutorial-tag tag-a">Condition A</span>
+        <div><strong>Standard captions</strong><br><span class="body-text">Plain white text captions appear below the video. No colors or additional visual cues.</span></div>
+      </div>
+      <div class="tutorial-step">
+        <span class="tutorial-tag tag-b">Condition B</span>
+        <div><strong>Emotion-coded captions + sound rhythm</strong><br><span class="body-text">After you respond, caption text is revealed in a color matching the detected emotion. A live frequency graph shows voice intensity throughout.</span></div>
+      </div>
+    </div>
+
+    <div class="alert-info">
+      <strong>Important:</strong> There are no right or wrong answers. Respond as quickly and honestly as you can — we are testing the interface, not you.
+    </div>
+
+    <button class="btn btn-primary btn-block btn-lg" onclick="startStudy()">Start the Study →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 3 — CONDITION BLOCK
+══════════════════════════════════════ -->
+<div class="screen" id="screen-condition">
+  <div class="progress-wrap">
+    <div class="progress-steps" id="progress-dots"></div>
+    <div class="progress-label" id="progress-label"></div>
+  </div>
+
+  <div class="card card-wide">
+    <div id="condition-header-bar"></div>
+    <div id="demo-banner" style="display:none;" class="demo-banner">
+      🎬 <strong>Demo mode</strong> — Animated placeholder running. Add your videos and set <code>PLACEHOLDER_MODE = false</code> when ready.
+    </div>
+    <div class="sentence-counter" id="sentence-counter"></div>
+
+    <!-- Video / Placeholder -->
+    <div class="video-wrap" id="video-wrap">
+      <video id="main-video" preload="auto" playsinline muted style="display:none;"></video>
+      <div id="video-placeholder" style="position:absolute;inset:0;background:#16130F;display:flex;align-items:center;justify-content:center;">
+        <svg id="ph-svg" viewBox="0 0 320 200" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <radialGradient id="bgGrad" cx="50%" cy="60%" r="55%">
+              <stop offset="0%" stop-color="#2A2520"/>
+              <stop offset="100%" stop-color="#16130F"/>
+            </radialGradient>
+            <radialGradient id="spotGrad" cx="50%" cy="30%" r="40%">
+              <stop offset="0%" stop-color="#3D3020" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#16130F" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="320" height="200" fill="url(#bgGrad)"/>
+          <rect width="320" height="200" fill="url(#spotGrad)"/>
+          <g id="ph-person" transform="translate(160,100)">
+            <ellipse cx="0" cy="42" rx="28" ry="38" fill="#2E2820"/>
+            <rect x="-7" y="4" width="14" height="14" rx="4" fill="#2E2820"/>
+            <ellipse cx="0" cy="-4" rx="22" ry="24" fill="#2E2820"/>
+            <rect id="ph-mouth" x="-8" y="6" width="16" height="4" rx="2" fill="#16130F" opacity="0.7"/>
+            <circle cx="-8" cy="-6" r="3.5" fill="#3A342C"/>
+            <circle cx="8"  cy="-6" r="3.5" fill="#3A342C"/>
+          </g>
+          <g id="ph-bars" transform="translate(60,180)">
+            <rect class="ph-bar" x="0"   width="6" height="3" y="-3" rx="3" fill="#4A3F30" opacity="0.7"/>
+            <rect class="ph-bar" x="14"  width="6" height="3" y="-3" rx="3" fill="#4A3F30" opacity="0.7"/>
+            <rect class="ph-bar" x="28"  width="6" height="3" y="-3" rx="3" fill="#4A3F30" opacity="0.7"/>
+            <rect class="ph-bar" x="42"  width="6" height="3" y="-3" rx="3" fill="#4A3F30" opacity="0.7"/>
+            <rect class="ph-bar" x="56"  width="6" height="3" y="-3" rx="3" fill="#4A3F30" opacity="0.7"/>
+            <rect class="ph-bar" x="70"  width="6" height="3" y="-3" rx="3" fill="#4A3F30" opacity="0.7"/>
+            <rect class="ph-bar" x="84"  width="6" height="3" y="-3" rx="3" fill="#4A3F30" opacity="0.7"/>
+            <rect class="ph-bar" x="98"  width="6" height="3" y="-3" rx="3" fill="#4A3F30" opacity="0.7"/>
+            <rect class="ph-bar" x="112" width="6" height="3" y="-3" rx="3" fill="#4A3F30" opacity="0.7"/>
+            <rect class="ph-bar" x="126" width="6" height="3" y="-3" rx="3" fill="#4A3F30" opacity="0.7"/>
+            <rect class="ph-bar" x="140" width="6" height="3" y="-3" rx="3" fill="#4A3F30" opacity="0.7"/>
+            <rect class="ph-bar" x="154" width="6" height="3" y="-3" rx="3" fill="#4A3F30" opacity="0.7"/>
+            <rect class="ph-bar" x="168" width="6" height="3" y="-3" rx="3" fill="#4A3F30" opacity="0.7"/>
+            <rect class="ph-bar" x="182" width="6" height="3" y="-3" rx="3" fill="#4A3F30" opacity="0.7"/>
+            <rect class="ph-bar" x="196" width="6" height="3" y="-3" rx="3" fill="#4A3F30" opacity="0.7"/>
+          </g>
+          <text id="ph-status" x="160" y="195" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#5A5040" letter-spacing="0.08em">READY</text>
+        </svg>
+      </div>
+      <div id="ph-progress-wrap" style="position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.08);display:none;">
+        <div id="ph-progress-bar" style="height:100%;width:0%;background:#E8A838;transition:none;"></div>
+      </div>
+    </div>
+
+    <!-- Caption bar -->
+    <div class="caption-bar">
+      <span class="caption-text" id="caption-text">—</span>
+    </div>
+
+    <!-- Waveform (condition B only) -->
+    <div class="waveform-wrap" id="waveform-wrap">
+      <div class="waveform-label">Voice intensity</div>
+      <canvas id="waveform"></canvas>
+    </div>
+
+    <!-- Reaction timer (shown after video ends) -->
+    <div class="reaction-timer" id="reaction-timer" style="display:none;">
+      <span class="timer-label">Reaction time</span>
+      <span class="timer-value running" id="timer-val">0.0 s</span>
+    </div>
+
+    <!-- Emotion picker (shown after video ends) -->
+    <div id="emotion-picker" style="display:none;">
+      <div class="emotion-prompt">What emotion did you perceive from the speaker?</div>
+      <div class="emotion-grid">
+        <button class="emotion-btn em-happy"    onclick="selectEmotion('Happy')">    <span class="emotion-icon">😄</span>Happy    </button>
+        <button class="emotion-btn em-angry"    onclick="selectEmotion('Angry')">    <span class="emotion-icon">😠</span>Angry    </button>
+        <button class="emotion-btn em-sad"      onclick="selectEmotion('Sad')">      <span class="emotion-icon">😔</span>Sad      </button>
+        <button class="emotion-btn em-surprised"onclick="selectEmotion('Surprised')"><span class="emotion-icon">😲</span>Surprised</button>
+        <button class="emotion-btn em-neutral"  onclick="selectEmotion('Neutral')">  <span class="emotion-icon">😐</span>Neutral  </button>
+        <button class="emotion-btn em-fearful"  onclick="selectEmotion('Fearful')">  <span class="emotion-icon">😨</span>Fearful  </button>
+      </div>
+      <button class="btn btn-primary btn-block" id="btn-next-sentence" disabled onclick="nextSentence()">
+        Confirm &amp; Next →
+      </button>
+    </div>
+
+    <!-- Play button -->
+    <div id="play-area">
+      <button class="btn btn-primary btn-block btn-lg" onclick="playSentence()">
+        ▶&nbsp; Play sentence
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 4 — NASA TLX
+══════════════════════════════════════ -->
+<div class="screen" id="screen-nasa">
+  <div class="card">
+    <div class="label" id="nasa-label-top"></div>
+    <div class="display-sm">Workload Assessment</div>
+    <div class="subtitle">NASA Task Load Index — rate each dimension for the block you just completed.</div>
+    <div id="nasa-items"></div>
+    <div class="nasa-total-box">
+      <div class="nasa-total-label">Raw TLX score (unweighted average)</div>
+      <div class="nasa-total-num" id="nasa-total">50</div>
+      <div class="nasa-total-label" style="margin-top:4px;">Lower = less cognitive load</div>
+    </div>
+    <button class="btn btn-primary btn-block btn-lg" onclick="submitNasa()">Save &amp; Continue →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 5 — BREAK
+══════════════════════════════════════ -->
+<div class="screen" id="screen-break">
+  <div class="card card-sm text-center">
+    <div style="font-size:48px;margin-bottom:16px;">☕</div>
+    <div class="display-sm">Short break</div>
+    <div class="subtitle">The second interface will begin shortly.<br>Take a moment to rest your eyes.</div>
+    <div class="break-countdown" id="break-countdown">0:20</div>
+    <div class="body-text mb-16">The next block starts automatically, or click below when ready.</div>
+    <button class="btn btn-primary btn-block btn-lg" id="btn-start-cond2" disabled onclick="startCondition(2)">
+      Begin Condition 2 →
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 6 — DEBRIEF
+══════════════════════════════════════ -->
+<div class="screen" id="screen-debrief">
+  <div class="card">
+    <div class="label">Final step</div>
+    <div class="display-sm">Debrief questions</div>
+    <div class="subtitle">Please answer these 3 short questions. Your responses are very valuable.</div>
+    <div class="debrief-q">
+      <label>1. Which interface felt easier to follow, and why?</label>
+      <textarea id="debrief-1" placeholder="Your answer…"></textarea>
+    </div>
+    <div class="debrief-q">
+      <label>2. Did the emotion colors or the frequency graph help you understand the speaker? Were there any moments where they felt misleading?</label>
+      <textarea id="debrief-2" placeholder="Your answer…"></textarea>
+    </div>
+    <div class="debrief-q">
+      <label>3. Is there anything you would change or add to the experimental interface?</label>
+      <textarea id="debrief-3" placeholder="Your answer…"></textarea>
+    </div>
+    <button class="btn btn-primary btn-block btn-lg mt-8" onclick="submitDebrief()">Submit &amp; Finish →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 7 — RESULTS
+══════════════════════════════════════ -->
+<div class="screen" id="screen-results">
+  <div class="card card-wide">
+    <div class="label">Session complete — thank you!</div>
+    <div class="display-sm">Results Summary</div>
+    <div class="subtitle" id="results-pid"></div>
+
+    <div id="submit-status" style="margin-bottom:16px;font-size:13px;color:var(--text-muted);"></div>
+
+    <div class="results-grid" id="results-grid"></div>
+
+    <hr class="divider">
+    <div class="label mb-8">Response log</div>
+    <table class="result-table">
+      <thead>
+        <tr><th>#</th><th>Cond.</th><th>ID</th><th>Correct emotion</th><th>Response</th><th>RT (s)</th><th>Result</th></tr>
+      </thead>
+      <tbody id="results-tbody"></tbody>
+    </table>
+
+    <hr class="divider">
+    <div class="label mb-8">Debrief answers</div>
+    <div id="debrief-summary"></div>
+
+    <hr class="divider">
+    <div class="flex gap-12">
+      <button class="btn btn-secondary" onclick="exportResults()">⬇ Download JSON</button>
+      <button class="btn btn-secondary" onclick="copyResults()">⧉ Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCRIPT
+══════════════════════════════════════ -->
+<script>
+
+/* ══════════════════════════════════════
+   CONFIG — edit these two things only
+══════════════════════════════════════ */
+
+// Set to false once you drop your mp4 files in a /videos/ folder
+const PLACEHOLDER_MODE = false;
+
+// Videos for each condition.
+// When PLACEHOLDER_MODE = false, put your files at videos/A1.mp4 etc.
+const VIDEO_CONFIG = {
+  A: [
+    { src: 'videos/A1.mp4', caption: '"Oh, wow. That\'s… that\'s really something."',                          emotion: 'Happy',     condEmotion: 'happy'     },
+    { src: 'videos/A2.mp4', caption: '"Right. Sure. I\'ll just… handle it, then."',                            emotion: 'Angry',     condEmotion: 'angry'     },
+    { src: 'videos/A3.mp4', caption: '"I spoke to her last week, actually. She seemed fine."',                  emotion: 'Sad',       condEmotion: 'sad'       },
+    { src: 'videos/A4.mp4', caption: '"They said yes? To all of it?"',                                          emotion: 'Surprised', condEmotion: 'surprised' },
+    { src: 'videos/A5.mp4', caption: '"The next version is due by end of week."',                               emotion: 'Neutral',   condEmotion: 'neutral'   },
+    { src: 'videos/A6.mp4', caption: '"I mean… yeah. I guess we could try that."',                              emotion: 'Fearful',   condEmotion: 'fearful'   },
+  ],
+  B: [
+    { src: 'videos/B1.mp4', caption: '"Honestly I don\'t even know what to say right now."',                   emotion: 'Happy',     condEmotion: 'happy'     },
+    { src: 'videos/B2.mp4', caption: '"That\'s fine. Totally fine."',                                           emotion: 'Angry',     condEmotion: 'angry'     },
+    { src: 'videos/B3.mp4', caption: '"It\'s fine, I just… I didn\'t think it would end like this."',          emotion: 'Sad',       condEmotion: 'sad'       },
+    { src: 'videos/B4.mp4', caption: '"Since when? Nobody mentioned this to me."',                              emotion: 'Surprised', condEmotion: 'surprised' },
+    { src: 'videos/B5.mp4', caption: '"The summary has been shared in the channel."',                           emotion: 'Neutral',   condEmotion: 'neutral'   },
+    { src: 'videos/B6.mp4', caption: '"And you\'re sure this is the right call? Like… completely sure?"',      emotion: 'Fearful',   condEmotion: 'fearful'   },
+  ]
+};
+
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+let PARTICIPANT_ID    = '';
+let CONDITION_ORDER   = ['A', 'B']; // assigned dynamically in enterStudy()
+let participantCount  = 0;          // used to alternate condition order
+
+const state = {
+  currentCondIdx: 0,
+  currentSentIdx: 0,
+  selectedEmotion: null,
+  reactionStart: null,
+  reactionTime: null,
+  timerInterval: null,
+  waveInterval: null,
+  logs: [],
+  nasaScores: { A: null, B: null },
+  debrief: {},
+  breakTimer: null,
+};
+
+/* ══════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════ */
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/* ══════════════════════════════════════
+   SCREEN 0 — PARTICIPANT ID
+══════════════════════════════════════ */
+function enterStudy() {
+  const val = document.getElementById('input-pid').value.trim();
+  if (!val) return;
+  PARTICIPANT_ID = val;
+
+  // Alternate condition order: odd-numbered entries get A→B, even get B→A
+  // We track this via localStorage so it persists across page loads on the same device
+  let count = parseInt(localStorage.getItem('dhh_participant_count') || '0');
+  count++;
+  localStorage.setItem('dhh_participant_count', count);
+  CONDITION_ORDER = count % 2 === 1 ? ['A', 'B'] : ['B', 'A'];
+
+  goTo('screen-consent');
+}
+
+/* ══════════════════════════════════════
+   SCREEN 1 — CONSENT
+══════════════════════════════════════ */
+function checkConsent() {
+  const ok = document.getElementById('check1').checked &&
+             document.getElementById('check2').checked &&
+             document.getElementById('check3').checked;
+  document.getElementById('btn-consent').disabled = !ok;
+}
+
+function declineConsent() {
+  if (confirm('Are you sure you want to decline? The session will end.')) {
+    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:DM Sans,sans-serif;color:#555;font-size:18px;text-align:center;padding:20px;">Thank you. You have chosen not to participate.<br>You may close this window.</div>';
+  }
+}
+
+/* ══════════════════════════════════════
+   START / CONDITION SETUP
+══════════════════════════════════════ */
+function startStudy() { startCondition(1); }
+
+function startCondition(num) {
+  state.currentCondIdx = num - 1;
+  state.currentSentIdx = 0;
+  state.selectedEmotion = null;
+  goTo('screen-condition');
+  setupConditionScreen();
+  loadSentence();
+}
+
+function setupConditionScreen() {
+  const condKey = CONDITION_ORDER[state.currentCondIdx];
+  const isB = condKey === 'B';
+
+  // Condition header
+  document.getElementById('condition-header-bar').innerHTML =
+    `<div class="condition-header ${isB ? 'cond-b' : 'cond-a'}">
+      <div class="cond-dot"></div>
+      Condition ${condKey} — ${isB ? 'Emotion-coded captions + sound rhythm' : 'Standard closed captions'}
+      &nbsp;·&nbsp; Block ${state.currentCondIdx + 1} of 2
+    </div>`;
+
+  // Demo banner
+  document.getElementById('demo-banner').style.display = PLACEHOLDER_MODE ? 'block' : 'none';
+
+  // Waveform visibility
+  document.getElementById('waveform-wrap').classList.toggle('visible', isB);
+
+  // Progress dots
+  document.getElementById('progress-dots').innerHTML =
+    Array.from({length: 6}, (_, i) =>
+      `<div class="step-dot ${i < state.currentSentIdx ? 'done' : i === state.currentSentIdx ? 'active' : ''}"></div>`
+    ).join('');
+  document.getElementById('progress-label').textContent =
+    `Block ${state.currentCondIdx + 1} of 2  ·  Sentence ${state.currentSentIdx + 1} of 6`;
+}
+
+/* ══════════════════════════════════════
+   LOAD SENTENCE
+══════════════════════════════════════ */
+function loadSentence() {
+  const condKey = CONDITION_ORDER[state.currentCondIdx];
+  const isB = condKey === 'B';
+  const sent = VIDEO_CONFIG[condKey][state.currentSentIdx];
+
+  setupConditionScreen();
+
+  document.getElementById('sentence-counter').innerHTML =
+    `Sentence <strong>${state.currentSentIdx + 1}</strong> of 6`;
+
+  // Reset caption
+  const captionEl = document.getElementById('caption-text');
+  captionEl.textContent = '—';
+  captionEl.className = 'caption-text';
+
+  // Reset UI state
+  document.getElementById('emotion-picker').style.display = 'none';
+  document.getElementById('play-area').style.display = 'block';
+  document.getElementById('reaction-timer').style.display = 'none';
+  document.getElementById('btn-next-sentence').disabled = true;
+  document.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('selected'));
+  state.selectedEmotion = null;
+  state.reactionTime = null;
+
+  if (PLACEHOLDER_MODE) {
+    // Reset placeholder
+    setPhStatus('READY');
+    stopPhAnimation();
+    document.getElementById('ph-progress-wrap').style.display = 'none';
+    document.getElementById('ph-progress-bar').style.width = '0%';
+  } else {
+    // Real video
+    const video = document.getElementById('main-video');
+    video.src = sent.src;
+    video.style.display = 'block';
+    document.getElementById('video-placeholder').style.display = 'none';
+    video.onerror = () => {
+      video.style.display = 'none';
+      document.getElementById('video-placeholder').style.display = 'flex';
+    };
+    // Caption appears (plain white) as soon as video plays
+    video.onplay = () => {
+      setTimeout(() => { captionEl.textContent = sent.caption; }, 300);
+    };
+    // Reaction phase begins when video ends
+    video.onended = () => onVideoEnded(sent, isB);
+  }
+}
+
+/* ══════════════════════════════════════
+   PLAY SENTENCE
+══════════════════════════════════════ */
+function playSentence() {
+  const condKey = CONDITION_ORDER[state.currentCondIdx];
+  const isB = condKey === 'B';
+  const sent = VIDEO_CONFIG[condKey][state.currentSentIdx];
+  document.getElementById('play-area').style.display = 'none';
+
+  if (PLACEHOLDER_MODE) {
+    runPlaceholder(sent, isB);
+  } else {
+    const video = document.getElementById('main-video');
+    video.play().catch(() => { document.getElementById('play-area').style.display = 'block'; });
+    if (isB) startWaveform();
+  }
+}
+
+/* ══════════════════════════════════════
+   PLACEHOLDER SIMULATION
+══════════════════════════════════════ */
+let phBarInterval = null, phProgressInterval = null;
+
+function runPlaceholder(sent, isB) {
+  const captionEl = document.getElementById('caption-text');
+  const words = sent.caption.split(' ');
+  const totalMs = Math.max(3500, words.length * 280);
+  const msPerWord = totalMs / words.length;
+  const startTime = performance.now();
+
+  setPhStatus('SPEAKING');
+  document.getElementById('ph-progress-wrap').style.display = 'block';
+  document.getElementById('ph-progress-bar').style.width = '0%';
+  startPhAnimation(isB);
+
+  // Word-by-word caption — plain white always, NO color during playback
+  let wordIdx = 0;
+  captionEl.className = 'caption-text';
+  captionEl.textContent = '';
+  const wordTimer = setInterval(() => {
+    if (wordIdx < words.length) {
+      captionEl.textContent = words.slice(0, wordIdx + 1).join(' ');
+      wordIdx++;
+    }
+  }, msPerWord);
+
+  // Progress bar
+  phProgressInterval = setInterval(() => {
+    const pct = Math.min(100, ((performance.now() - startTime) / totalMs) * 100);
+    document.getElementById('ph-progress-bar').style.width = pct + '%';
+    if (pct >= 100) clearInterval(phProgressInterval);
+  }, 40);
+
+  // Done
+  setTimeout(() => {
+    clearInterval(wordTimer);
+    clearInterval(phProgressInterval);
+    document.getElementById('ph-progress-bar').style.width = '100%';
+    setPhStatus('DONE');
+    stopPhAnimation();
+    setTimeout(() => onVideoEnded(sent, isB), 300);
+  }, totalMs + 100);
+}
+
+function startPhAnimation(isB) {
+  const bars = document.querySelectorAll('.ph-bar');
+  const mouth = document.getElementById('ph-mouth');
+  const color = isB ? '#E8A838' : '#7A6F62';
+  phBarInterval = setInterval(() => {
+    bars.forEach(bar => {
+      const h = 4 + Math.random() * 18;
+      bar.setAttribute('height', h); bar.setAttribute('y', -h);
+      bar.setAttribute('fill', color); bar.setAttribute('opacity', 0.5 + Math.random() * 0.5);
+    });
+    const mh = 2 + Math.random() * 6;
+    mouth.setAttribute('height', mh); mouth.setAttribute('y', 4 + (6 - mh) / 2);
+  }, 120);
+}
+
+function stopPhAnimation() {
+  clearInterval(phBarInterval);
+  document.querySelectorAll('.ph-bar').forEach(bar => {
+    bar.setAttribute('height', 3); bar.setAttribute('y', -3);
+    bar.setAttribute('fill', '#4A3F30'); bar.setAttribute('opacity', 0.7);
+  });
+  const mouth = document.getElementById('ph-mouth');
+  mouth.setAttribute('height', 4); mouth.setAttribute('y', 6);
+}
+
+function setPhStatus(t) {
+  const el = document.getElementById('ph-status');
+  if (el) el.textContent = t;
+}
+
+/* ══════════════════════════════════════
+   VIDEO ENDED → reaction phase begins
+══════════════════════════════════════ */
+function onVideoEnded(sent, isB) {
+  stopWaveform();
+  state.reactionStart = performance.now();
+  const timerEl = document.getElementById('timer-val');
+  document.getElementById('reaction-timer').style.display = 'flex';
+  timerEl.className = 'timer-value running';
+  state.timerInterval = setInterval(() => {
+    timerEl.textContent = ((performance.now() - state.reactionStart) / 1000).toFixed(1) + ' s';
+  }, 100);
+  document.getElementById('emotion-picker').style.display = 'block';
+}
+
+/* ══════════════════════════════════════
+   SELECT EMOTION
+   Color only revealed AFTER participant picks
+══════════════════════════════════════ */
+function selectEmotion(emotion) {
+  if (!state.reactionStart) return;
+
+  clearInterval(state.timerInterval);
+  state.reactionTime = ((performance.now() - state.reactionStart) / 1000).toFixed(2);
+  document.getElementById('timer-val').className = 'timer-value';
+  document.getElementById('timer-val').textContent = state.reactionTime + ' s';
+
+  state.selectedEmotion = emotion;
+  document.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelector(`.em-${emotion.toLowerCase()}`).classList.add('selected');
+  document.getElementById('btn-next-sentence').disabled = false;
+
+  // Condition B only: reveal emotion color on caption AFTER response is locked
+  const condKey = CONDITION_ORDER[state.currentCondIdx];
+  if (condKey === 'B') {
+    const sent = VIDEO_CONFIG[condKey][state.currentSentIdx];
+    document.getElementById('caption-text').className = 'caption-text emotion-' + sent.condEmotion;
+  }
+}
+
+/* ══════════════════════════════════════
+   NEXT SENTENCE
+══════════════════════════════════════ */
+function nextSentence() {
+  const condKey = CONDITION_ORDER[state.currentCondIdx];
+  const sent = VIDEO_CONFIG[condKey][state.currentSentIdx];
+
+  state.logs.push({
+    participant:    PARTICIPANT_ID,
+    condition:      condKey,
+    sentenceId:     condKey + (state.currentSentIdx + 1),
+    sentenceText:   sent.caption,
+    correctEmotion: sent.emotion,
+    response:       state.selectedEmotion,
+    correct:        state.selectedEmotion === sent.emotion,
+    reactionTime:   parseFloat(state.reactionTime),
+  });
+
+  state.currentSentIdx++;
+  if (state.currentSentIdx < VIDEO_CONFIG[condKey].length) {
+    loadSentence();
+  } else {
+    showNasaTlx(condKey);
+  }
+}
+
+/* ══════════════════════════════════════
+   WAVEFORM (condition B)
+══════════════════════════════════════ */
+let wavePoints = [];
+function startWaveform() {
+  const canvas = document.getElementById('waveform');
+  const ctx = canvas.getContext('2d');
+  wavePoints = [];
+  state.waveInterval = setInterval(() => {
+    const val = 0.2 + Math.random() * 0.6 + Math.sin(Date.now() / 200) * 0.15;
+    wavePoints.push(Math.max(0, Math.min(1, val)));
+    if (wavePoints.length > 120) wavePoints.shift();
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    ctx.beginPath();
+    ctx.strokeStyle = '#1A7A4A';
+    ctx.lineWidth = 2;
+    wavePoints.forEach((p, i) => {
+      const x = (i / 119) * w;
+      const y = h - p * (h * 0.8) - h * 0.1;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+  }, 80);
+}
+function stopWaveform() { clearInterval(state.waveInterval); }
+
+/* ══════════════════════════════════════
+   NASA TLX
+══════════════════════════════════════ */
+const NASA_DIMS = [
+  { key: 'mental',   name: 'Mental demand',   desc: 'How much thinking, deciding, or calculating was required?',      low: 'Very low', high: 'Very high' },
+  { key: 'physical', name: 'Physical demand',  desc: 'How much physical activity was required?',                      low: 'Very low', high: 'Very high' },
+  { key: 'temporal', name: 'Temporal demand',  desc: 'How much time pressure did you feel?',                         low: 'Very low', high: 'Very high' },
+  { key: 'perf',     name: 'Performance',      desc: 'How successful were you in accomplishing the task?',            low: 'Perfect',  high: 'Failure'   },
+  { key: 'effort',   name: 'Effort',           desc: 'How hard did you have to work to accomplish your performance?', low: 'Very low', high: 'Very high' },
+  { key: 'frustr',   name: 'Frustration',      desc: 'How irritated, stressed, or annoyed did you feel?',            low: 'Very low', high: 'Very high' },
+];
+
+function showNasaTlx(condKey) {
+  document.getElementById('nasa-label-top').textContent = `Condition ${condKey} — Workload rating`;
+  document.getElementById('nasa-items').innerHTML = NASA_DIMS.map(d => `
+    <div class="nasa-item">
+      <div class="nasa-name">${d.name}</div>
+      <div class="nasa-desc">${d.desc}</div>
+      <div class="nasa-ends"><span>${d.low}</span><span>${d.high}</span></div>
+      <input type="range" min="0" max="100" step="5" value="50" id="nasa-${d.key}" oninput="updateNasaTotal()">
+      <div class="nasa-val" id="nasav-${d.key}">50</div>
+    </div>`).join('');
+  updateNasaTotal();
+  document.getElementById('screen-nasa').dataset.condKey = condKey;
+  goTo('screen-nasa');
+}
+
+function updateNasaTotal() {
+  let sum = 0;
+  NASA_DIMS.forEach(d => {
+    const v = parseInt(document.getElementById('nasa-' + d.key).value);
+    document.getElementById('nasav-' + d.key).textContent = v;
+    sum += v;
+  });
+  document.getElementById('nasa-total').textContent = Math.round(sum / NASA_DIMS.length);
+}
+
+function submitNasa() {
+  const condKey = document.getElementById('screen-nasa').dataset.condKey;
+  const scores = {};
+  NASA_DIMS.forEach(d => { scores[d.key] = parseInt(document.getElementById('nasa-' + d.key).value); });
+  scores.total = Math.round(Object.values(scores).reduce((a, b) => a + b, 0) / NASA_DIMS.length);
+  state.nasaScores[condKey] = scores;
+  state.currentCondIdx === 0 ? showBreak() : goTo('screen-debrief');
+}
+
+/* ══════════════════════════════════════
+   BREAK — 20 seconds (10 in demo mode)
+══════════════════════════════════════ */
+function showBreak() {
+  goTo('screen-break');
+  let secs = 10;
+  const btn = document.getElementById('btn-start-cond2');
+  btn.disabled = true;
+  const el = document.getElementById('break-countdown');
+
+  state.breakTimer = setInterval(() => {
+    secs--;
+    const m = Math.floor(secs / 60);
+    const s = (secs % 60).toString().padStart(2, '0');
+    el.textContent = m + ':' + s;
+    if (secs <= 0) {
+      clearInterval(state.breakTimer);
+      el.textContent = 'Ready!';
+      btn.disabled = false;
+    }
+  }, 1000);
+}
+
+/* ══════════════════════════════════════
+   DEBRIEF
+══════════════════════════════════════ */
+function submitDebrief() {
+  state.debrief = {
+    q1: document.getElementById('debrief-1').value,
+    q2: document.getElementById('debrief-2').value,
+    q3: document.getElementById('debrief-3').value,
+  };
+  showResults();
+}
+
+/* ══════════════════════════════════════
+   RESULTS + AUTO EXPORT
+══════════════════════════════════════ */
+function buildPayload() {
+  return {
+    participant:    PARTICIPANT_ID,
+    conditionOrder: CONDITION_ORDER,
+    timestamp:      new Date().toISOString(),
+    responses:      state.logs,
+    nasaScores:     state.nasaScores,
+    debrief:        state.debrief,
+  };
+}
+
+function showResults() {
+  goTo('screen-results');
+
+  // Auto-export: download JSON + submit to Netlify simultaneously
+  exportResults();
+  submitToNetlify();
+
+  document.getElementById('results-pid').textContent =
+    `Participant: ${PARTICIPANT_ID}  ·  Order: ${CONDITION_ORDER.join(' → ')}`;
+
+  const condA = state.logs.filter(l => l.condition === 'A');
+  const condB = state.logs.filter(l => l.condition === 'B');
+  const acc    = arr => arr.length ? Math.round(arr.filter(l => l.correct).length / arr.length * 100) + '%' : '—';
+  const avgRt  = arr => arr.length ? (arr.reduce((s, l) => s + l.reactionTime, 0) / arr.length).toFixed(2) + ' s' : '—';
+  const nasaA  = state.nasaScores[CONDITION_ORDER[0]];
+  const nasaB  = state.nasaScores[CONDITION_ORDER[1]];
+
+  document.getElementById('results-grid').innerHTML = `
+    <div class="result-card"><div class="result-card-label">Condition A accuracy</div><div class="result-card-val">${acc(condA)}</div><div class="result-card-sub">${condA.filter(l=>l.correct).length}/${condA.length} correct</div></div>
+    <div class="result-card"><div class="result-card-label">Condition B accuracy</div><div class="result-card-val">${acc(condB)}</div><div class="result-card-sub">${condB.filter(l=>l.correct).length}/${condB.length} correct</div></div>
+    <div class="result-card"><div class="result-card-label">Avg reaction time — A</div><div class="result-card-val">${avgRt(condA)}</div></div>
+    <div class="result-card"><div class="result-card-label">Avg reaction time — B</div><div class="result-card-val">${avgRt(condB)}</div></div>
+    <div class="result-card"><div class="result-card-label">NASA-TLX — Cond. ${CONDITION_ORDER[0]}</div><div class="result-card-val">${nasaA ? nasaA.total : '—'}</div><div class="result-card-sub">out of 100</div></div>
+    <div class="result-card"><div class="result-card-label">NASA-TLX — Cond. ${CONDITION_ORDER[1]}</div><div class="result-card-val">${nasaB ? nasaB.total : '—'}</div><div class="result-card-sub">out of 100</div></div>
+  `;
+
+  document.getElementById('results-tbody').innerHTML = state.logs.map((l, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td><span class="pill ${l.condition === 'A' ? 'pill-blue' : 'pill-green'}">${l.condition}</span></td>
+      <td>${l.sentenceId}</td>
+      <td>${l.correctEmotion}</td>
+      <td>${l.response}</td>
+      <td>${l.reactionTime}</td>
+      <td><span class="${l.correct ? 'correct-badge' : 'wrong-badge'}">${l.correct ? 'Correct' : 'Wrong'}</span></td>
+    </tr>`).join('');
+
+  document.getElementById('debrief-summary').innerHTML = [
+    ['Which interface felt easier?', state.debrief.q1],
+    ['Emotion colors / frequency graph feedback', state.debrief.q2],
+    ['Suggested changes', state.debrief.q3],
+  ].map(([q, a]) => `
+    <div style="margin-bottom:14px;">
+      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;">${q}</div>
+      <div style="font-size:14px;color:var(--text-muted);line-height:1.6;">${a || '(no answer)'}</div>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════
+   EXPORT — download JSON file
+══════════════════════════════════════ */
+function exportResults() {
+  const json = JSON.stringify(buildPayload(), null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${PARTICIPANT_ID}_${Date.now()}.json`;
+  a.click();
+}
+
+/* ══════════════════════════════════════
+   COPY TO CLIPBOARD
+══════════════════════════════════════ */
+function copyResults() {
+  navigator.clipboard.writeText(JSON.stringify(buildPayload(), null, 2))
+    .then(() => alert('Results copied to clipboard!'))
+    .catch(() => alert('Copy failed — please use the Download button instead.'));
+}
+
+/* ══════════════════════════════════════
+   NETLIFY FORMS SUBMISSION
+   Results go to your Netlify dashboard → Forms tab
+══════════════════════════════════════ */
+function submitToNetlify() {
+  const p = buildPayload();
+  const statusEl = document.getElementById('submit-status');
+  statusEl.textContent = 'Sending results to server…';
+
+  fetch('/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      'form-name':      'results',
+      'participant':    p.participant,
+      'condition_order':p.conditionOrder.join(' → '),
+      'timestamp':      p.timestamp,
+      'data':           JSON.stringify(p),
+    }).toString(),
+  })
+  .then(() => {
+    statusEl.style.color = 'var(--success)';
+    statusEl.textContent = '✓ Results saved to server successfully.';
+  })
+  .catch(() => {
+    statusEl.style.color = 'var(--danger)';
+    statusEl.textContent = '⚠ Server submission failed — please use the Download button below to save your results manually.';
+  });
+}
+
+</script>
+</body>
+</html>
